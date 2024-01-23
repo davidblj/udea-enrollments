@@ -7,4 +7,6 @@ import java.util.List;
 public interface CourseService {
 
     List<CourseDTO> listCourses();
+
+    CourseDTO saveCourse(CourseDTO course);
 }

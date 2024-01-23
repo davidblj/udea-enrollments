@@ -24,4 +24,9 @@ public class CourseServiceImp implements CourseService {
                 .map(courseMapper::courseToCourseDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public CourseDTO saveCourse(CourseDTO course) {
+        return courseMapper.courseToCourseDTO(courseRepository.save(courseMapper.courseDtoToCourse(course)));
+    }
 }
