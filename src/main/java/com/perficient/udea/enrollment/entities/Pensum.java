@@ -10,6 +10,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -18,6 +20,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class Pensum {
+
+    // TODO: rename class to syllabus
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -37,4 +41,7 @@ public class Pensum {
 
     @NotNull
     private int minimumTotalCredits;
+
+    @OneToMany(mappedBy = "id")
+    private Set<Student> students = new HashSet<>();
 }

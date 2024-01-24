@@ -1,6 +1,6 @@
 package com.perficient.udea.enrollment.services;
 
-import com.perficient.udea.enrollment.model.CourseDTO;
+import com.perficient.udea.enrollment.DTOs.CourseDTO;
 
 import java.util.List;
 

@@ -1,6 +1,5 @@
-package com.perficient.udea.enrollment.model;
+package com.perficient.udea.enrollment.DTOs;
 
-import com.perficient.udea.enrollment.entities.CoursePrerequisite;
 import lombok.Builder;
 import lombok.Data;
 

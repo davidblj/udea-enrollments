@@ -1,4 +1,4 @@
-package com.perficient.udea.enrollment.model;
+package com.perficient.udea.enrollment.DTOs;
 
 import lombok.Builder;
 import lombok.Data;

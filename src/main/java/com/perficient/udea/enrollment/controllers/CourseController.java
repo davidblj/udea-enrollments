@@ -1,6 +1,6 @@
 package com.perficient.udea.enrollment.controllers;
 
-import com.perficient.udea.enrollment.model.CourseDTO;
+import com.perficient.udea.enrollment.DTOs.CourseDTO;
 import com.perficient.udea.enrollment.services.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

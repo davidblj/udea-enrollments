@@ -12,7 +12,6 @@ import org.hibernate.type.SqlTypes;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -20,9 +19,10 @@ import java.util.stream.Collectors;
 @Builder
 public class Course {
 
-    public Course(UUID id, String courseName, String scienceField, Pensum pensum, Set<CoursePrerequisite> coursePrerequisites) {
+    public Course(UUID id, String courseName, int semester, String scienceField, Pensum pensum, Set<CoursePrerequisite> coursePrerequisites) {
         this.id = id;
         this.courseName = courseName;
+        this.semester = semester;
         this.scienceField = scienceField;
         this.pensum = pensum;
         this.setCoursePrerequisites(coursePrerequisites);
@@ -41,10 +41,11 @@ public class Course {
     @Column(length = 50)
     private String courseName;
 
+    private int semester;
+
     // TODO: foreign table, ENUMS ?
     private String scienceField;
 
-    // TODO: mappedBy? inverseAssociation?
     @ManyToOne
     private Pensum pensum;
 

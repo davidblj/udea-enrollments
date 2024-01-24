@@ -2,7 +2,6 @@ package com.perficient.udea.enrollment.entities;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.perficient.udea.enrollment.services;
 
 import com.perficient.udea.enrollment.mappers.CourseMapper;
-import com.perficient.udea.enrollment.model.CourseDTO;
+import com.perficient.udea.enrollment.DTOs.CourseDTO;
 import com.perficient.udea.enrollment.repositories.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
