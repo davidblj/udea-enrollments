@@ -2,10 +2,7 @@ package com.perficient.udea.enrollment.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -19,6 +16,7 @@ import java.util.UUID;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Pensum {
 
     // TODO: rename class to syllabus
@@ -42,6 +40,6 @@ public class Pensum {
     @NotNull
     private int minimumTotalCredits;
 
-    @OneToMany(mappedBy = "id")
+    @OneToMany(mappedBy = "pensum")
     private Set<Student> students = new HashSet<>();
 }

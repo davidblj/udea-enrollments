@@ -11,6 +11,6 @@ import java.util.UUID;
 public class RegistrationSpotsDTO {
 
     private String personId;
-    private List<CourseDTO> courseDTOList;
+    private List<SimpleCourseDTO> courseDTOList;
     private Long timestamp;
 }

@@ -3,16 +3,13 @@ package com.perficient.udea.enrollment.DTOs;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
-public class CourseDTO {
+public class SimpleCourseDTO {
 
     private UUID id;
     private String courseName;
     private String scienceField;
-    private String pensumId;
-    private List<CoursePrerequisiteDTO> coursePrerequisites;
 }

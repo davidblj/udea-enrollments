@@ -17,15 +17,17 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 public class Course {
 
-    public Course(UUID id, String courseName, int semester, String scienceField, Pensum pensum, Set<CoursePrerequisite> coursePrerequisites) {
+    public Course(UUID id, String courseName, int semester, String scienceField, Pensum pensum, Set<CoursePrerequisite> coursePrerequisites, Set<CourseInstance> courseInstances) {
         this.id = id;
         this.courseName = courseName;
         this.semester = semester;
         this.scienceField = scienceField;
         this.pensum = pensum;
         this.setCoursePrerequisites(coursePrerequisites);
+        this.courseInstances = courseInstances;
     }
 
     @Id
@@ -52,6 +54,9 @@ public class Course {
     @Builder.Default
     @OneToMany(mappedBy = "coursePrerequisiteId.course", cascade = CascadeType.PERSIST)
     private Set<CoursePrerequisite> coursePrerequisites = new HashSet<>();
+
+    @OneToMany(mappedBy = "course")
+    private Set<CourseInstance> courseInstances = new HashSet<>();
 
     public void setCoursePrerequisites(Set<CoursePrerequisite> coursePrerequisites) {
         coursePrerequisites.forEach(coursePrerequisite -> {

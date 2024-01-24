@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 
 import java.util.UUID;
 
-//@Mapper(componentModel = "spring")
 @Mapper()
 public interface CourseMapper {
 

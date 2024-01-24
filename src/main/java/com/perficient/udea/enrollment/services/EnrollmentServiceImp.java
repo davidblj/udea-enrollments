@@ -1,8 +1,8 @@
 package com.perficient.udea.enrollment.services;
 
 import com.perficient.udea.enrollment.DTOs.RegistrationSpotsDTO;
-import com.perficient.udea.enrollment.mappers.CourseMapper;
 import com.perficient.udea.enrollment.entities.Course;
+import com.perficient.udea.enrollment.mappers.SimpleCourseMapper;
 import com.perficient.udea.enrollment.repositories.CourseGradesRepository;
 import com.perficient.udea.enrollment.repositories.CourseRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
     private final CourseRepository courseRepository;
 
-    private final CourseMapper courseMapper;
+    private final SimpleCourseMapper simpleCourseMapper;
 
     @Override
     public RegistrationSpotsDTO getEnrollmentInformation(String studentId) {
@@ -32,9 +32,9 @@ public class EnrollmentServiceImp implements EnrollmentService {
         // TODO: factory to build the enrollment model with its information
         // TODO: return said information (pop the information out of the domain, create mappers)
 
-        List<Course> completedCourses = getCompletedCoursesBy(studentId);
+        List<Course> successfullyCompletedCourses = getCompletedCoursesBy(studentId);
         List<Course> baseOffering = courseRepository.getDefaultCourseOfferingByStudentId(studentId);
-        List<Course> availableCourses = getAvailabilityFromBaseOfferingAndCompletedCourses(baseOffering, completedCourses);
+        List<Course> availableCourses = getAvailableCourses(baseOffering, successfullyCompletedCourses);
 
         return buildDTOWithStudentIdAndAvailableCourses(studentId, availableCourses);
     }
@@ -46,13 +46,14 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 .toList();
     }
 
-    private List<Course> getAvailabilityFromBaseOfferingAndCompletedCourses(List<Course> baseOffering, List<Course> completedCourses) {
+    private List<Course> getAvailableCourses(List<Course> baseOffering, List<Course> completedCourses) {
         return baseOffering.stream()
-                .filter(coursesWithAllPrerequisitesMet(completedCourses))
+                .filter(coursesSuccessfullyCompleted(completedCourses))
+                .filter(coursesWithoutAllPrerequisitesMet(completedCourses))
                 .toList();
     }
 
-    private Predicate<Course> coursesWithAllPrerequisitesMet(List<Course> completedCourses) {
+    private Predicate<Course> coursesWithoutAllPrerequisitesMet(List<Course> completedCourses) {
         return availableCourse -> availableCourse.getCoursePrerequisites().stream()
                 .map(coursePrerequisite -> coursePrerequisite.getCoursePrerequisiteId().getCoursePrerequisite().getId())
                 .allMatch(courseCompletion(completedCourses));
@@ -62,9 +63,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
         return (uuid) -> completedCourses.stream().anyMatch(course -> course.getId().equals(uuid));
     }
 
+    private Predicate<Course> coursesSuccessfullyCompleted(List<Course> completedCourses) {
+        return availableCourse -> completedCourses.stream().noneMatch(course -> course.getId().equals(availableCourse.getId()));
+    }
+
     private RegistrationSpotsDTO buildDTOWithStudentIdAndAvailableCourses(String studentId, List<Course> availableCourses) {
         return RegistrationSpotsDTO.builder()
-                .courseDTOList(availableCourses.stream().map(courseMapper::courseToCourseDTO).toList())
+                .courseDTOList(availableCourses.stream().map(simpleCourseMapper::courseToSimpleCourseDTO).toList())
                 .personId(studentId)
                 .timestamp(System.currentTimeMillis())
                 .build();
