@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 public class BootstrapData implements CommandLineRunner {
 
     private final CourseRepository courseRepository;
-    private final CourseInstanceRepository courseInstanceRepository;
+    private final ClassRoomRepository courseInstanceRepository;
     private final CoursePrerequisiteRepository coursePrerequisiteRepository;
-    private final PensumRepository pensumRepository;
+    private final SyllabusRepository syllabusRepository;
     private final PersonRepository personRepository;
     private final CourseGradesRepository courseGradesRepository;
 
@@ -25,48 +25,49 @@ public class BootstrapData implements CommandLineRunner {
 
     private void loadData() {
 
-        if (pensumRepository.count() == 0) {
+        if (syllabusRepository.count() == 0) {
 
-            Pensum computerSciencePensum = Pensum.builder()
+            Syllabus computerScienceSyllabus = Syllabus.builder()
                     .career("Computer Science Engineering")
                     .totalCredits(210)
                     .minimumTotalCredits(150)
                     .build();
-            pensumRepository.save(computerSciencePensum);
+            syllabusRepository.save(computerScienceSyllabus);
 
             // Courses
             Course calculusCourse = Course.builder()
                     .courseName("Differential Calculus")
-                    .pensum(computerSciencePensum)
+                    .syllabus(computerScienceSyllabus)
                     .semester(2)
                     .scienceField("Mathematics")
                     .build();
             Course integralCalculusCourse = Course.builder()
                     .courseName("Integral Calculus")
-                    .pensum(computerSciencePensum)
+                    .syllabus(computerScienceSyllabus)
                     .semester(3)
                     .scienceField("Mathematics")
                     .build();
             Course physicsFundamentals = Course.builder()
                     .courseName("Physics Fundamentals")
-                    .pensum(computerSciencePensum)
+                    .syllabus(computerScienceSyllabus)
                     .semester(3)
                     .scienceField("Physics")
                     .build();
             Course algebra = Course.builder()
                     .courseName("Algebra")
-                    .pensum(computerSciencePensum)
+                    .syllabus(computerScienceSyllabus)
                     .semester(1)
+                    .scienceField("Mathematics")
                     .build();
             Course computerProgramming = Course.builder()
                     .courseName("Computer Programming")
-                    .pensum(computerSciencePensum)
+                    .syllabus(computerScienceSyllabus)
                     .semester(1)
                     .scienceField("Software methods and Technologies")
                     .build();
             Course objectOrientedProgramming = Course.builder()
-                    .courseName("Computer Programming")
-                    .pensum(computerSciencePensum)
+                    .courseName("Object Oriented Programming")
+                    .syllabus(computerScienceSyllabus)
                     .semester(2)
                     .scienceField("Software methods and Technologies")
                     .build();
@@ -79,32 +80,32 @@ public class BootstrapData implements CommandLineRunner {
             courseRepository.save(objectOrientedProgramming);
 
             // Instances
-            CourseInstance intCalcMondayWednesday = CourseInstance.builder()
+            ClassRoom intCalcMondayWednesday = ClassRoom.builder()
                     .course(integralCalculusCourse)
                     .availableCapacity(40)
                     .build();
 
-            CourseInstance diffCalcMondayWednesday = CourseInstance.builder()
+            ClassRoom diffCalcMondayWednesday = ClassRoom.builder()
                     .course(calculusCourse)
                     .availableCapacity(40)
                     .build();
 
-            CourseInstance algebraMondayWednesday = CourseInstance.builder()
+            ClassRoom algebraMondayWednesday = ClassRoom.builder()
                     .course(algebra)
                     .availableCapacity(20)
                     .build();
 
-            CourseInstance physicsFundamentalsMondayWednesday = CourseInstance.builder()
+            ClassRoom physicsFundamentalsMondayWednesday = ClassRoom.builder()
                     .course(physicsFundamentals)
                     .availableCapacity(20)
                     .build();
 
-            CourseInstance computerProgrammingMondayWednesday = CourseInstance.builder()
+            ClassRoom computerProgrammingMondayWednesday = ClassRoom.builder()
                     .course(computerProgramming)
                     .availableCapacity(25)
                     .build();
 
-            CourseInstance objectOrientedProgrammingMondayWednesday = CourseInstance.builder()
+            ClassRoom objectOrientedProgrammingMondayWednesday = ClassRoom.builder()
                     .course(objectOrientedProgramming)
                     .availableCapacity(25)
                     .build();
@@ -123,7 +124,6 @@ public class BootstrapData implements CommandLineRunner {
                     .build();
             CoursePrerequisite prerequisiteDifferentialCalculus1 = CoursePrerequisite.builder()
                     .coursePrerequisiteId(idDiffCalcAndAlgebra)
-                    .semester(202301)
                     .build();
 
             CoursePrerequisiteId idIntCalcAndDiffCalc = CoursePrerequisiteId.builder()
@@ -132,7 +132,6 @@ public class BootstrapData implements CommandLineRunner {
                     .build();
             CoursePrerequisite prerequisiteIntegralCalculus1 = CoursePrerequisite.builder()
                     .coursePrerequisiteId(idIntCalcAndDiffCalc)
-                    .semester(202301)
                     .build();
 
             CoursePrerequisiteId idObjOriProAndCompPro = CoursePrerequisiteId.builder()
@@ -141,7 +140,6 @@ public class BootstrapData implements CommandLineRunner {
                     .build();
             CoursePrerequisite prerequisiteObjOriProAndCompPro1 = CoursePrerequisite.builder()
                     .coursePrerequisiteId(idObjOriProAndCompPro)
-                    .semester(202301)
                     .build();
 
             coursePrerequisiteRepository.save(prerequisiteIntegralCalculus1);
@@ -151,7 +149,7 @@ public class BootstrapData implements CommandLineRunner {
             // students
             Student student1 = Student.builder()
                     .semester(3)
-                    .pensum(computerSciencePensum)
+                    .syllabus(computerScienceSyllabus)
                     .stratum(3)
                     .build();
 
@@ -167,12 +165,12 @@ public class BootstrapData implements CommandLineRunner {
             CourseGrades courseGrades1 = CourseGrades.builder()
                     .finalGrade(3.5)
                     .student(student1)
-                    .courseInstance(diffCalcMondayWednesday)
+                    .classRoom(diffCalcMondayWednesday)
                     .build();
             CourseGrades courseGrades2 = CourseGrades.builder()
                     .finalGrade(4.2)
                     .student(student1)
-                    .courseInstance(algebraMondayWednesday)
+                    .classRoom(algebraMondayWednesday)
                     .build();
 
             courseGradesRepository.save(courseGrades1);

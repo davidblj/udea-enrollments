@@ -20,14 +20,15 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Course {
 
-    public Course(UUID id, String courseName, int semester, String scienceField, Pensum pensum, Set<CoursePrerequisite> coursePrerequisites, Set<CourseInstance> courseInstances) {
+    public Course(UUID id, String courseName, int semester, String scienceField, Syllabus syllabus, Set<CoursePrerequisite> coursePrerequisites, Set<ClassRoom> classRooms, Set<Subject> subjects) {
         this.id = id;
         this.courseName = courseName;
         this.semester = semester;
         this.scienceField = scienceField;
-        this.pensum = pensum;
+        this.syllabus = syllabus;
         this.setCoursePrerequisites(coursePrerequisites);
-        this.courseInstances = courseInstances;
+        this.classRooms = classRooms;
+        this.setSubjects(subjects);
     }
 
     @Id
@@ -49,22 +50,32 @@ public class Course {
     private String scienceField;
 
     @ManyToOne
-    private Pensum pensum;
+    private Syllabus syllabus;
 
     @Builder.Default
     @OneToMany(mappedBy = "coursePrerequisiteId.course", cascade = CascadeType.PERSIST)
     private Set<CoursePrerequisite> coursePrerequisites = new HashSet<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "course")
-    private Set<CourseInstance> courseInstances = new HashSet<>();
+    private Set<ClassRoom> classRooms = new HashSet<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "course", cascade = CascadeType.PERSIST)
+    private Set<Subject> subjects = new HashSet<>();
 
     public void setCoursePrerequisites(Set<CoursePrerequisite> coursePrerequisites) {
         coursePrerequisites.forEach(coursePrerequisite -> {
-                    CoursePrerequisiteId coursePrerequisiteId = CoursePrerequisiteId.builder()
-                            .course(this)
-                            .coursePrerequisite(coursePrerequisite.getCoursePrerequisiteId().getCoursePrerequisite()).build();
-                    coursePrerequisite.setCoursePrerequisiteId(coursePrerequisiteId);
+            CoursePrerequisiteId coursePrerequisiteId = CoursePrerequisiteId.builder()
+                    .course(this)
+                    .coursePrerequisite(coursePrerequisite.getCoursePrerequisiteId().getCoursePrerequisite()).build();
+            coursePrerequisite.setCoursePrerequisiteId(coursePrerequisiteId);
         });
         this.coursePrerequisites = coursePrerequisites;
+    }
+
+    public void setSubjects(Set<Subject> subjects) {
+        subjects.forEach(subject -> subject.setCourse(this));
+        this.subjects = subjects;
     }
 }

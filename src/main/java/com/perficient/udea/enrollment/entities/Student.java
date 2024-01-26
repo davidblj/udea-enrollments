@@ -19,5 +19,7 @@ public class Student extends Person {
     private int semester;
 
     @ManyToOne
-    private Pensum pensum;
+    private Syllabus syllabus;
+
+
 }

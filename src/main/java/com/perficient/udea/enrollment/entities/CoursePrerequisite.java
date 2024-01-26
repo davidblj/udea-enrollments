@@ -13,6 +13,4 @@ public class CoursePrerequisite {
 
     @EmbeddedId
     private CoursePrerequisiteId coursePrerequisiteId;
-
-    private int semester;
 }

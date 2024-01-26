@@ -8,11 +8,13 @@ import org.mapstruct.Mapping;
 
 import java.util.UUID;
 
-@Mapper()
+@Mapper
 public interface CourseMapper {
 
-    @Mapping( target = "pensum.id", source = "pensumId" )
+    @Mapping( target = "syllabus.id", source = "syllabusId" )
     Course courseDtoToCourse(CourseDTO courseDto);
+
+    @Mapping( target = "syllabusId", source = "syllabus.id" )
     CourseDTO courseToCourseDTO(Course course);
 
     default CoursePrerequisiteId map(String value) {

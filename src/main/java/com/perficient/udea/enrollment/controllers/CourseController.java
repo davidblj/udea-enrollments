@@ -26,10 +26,9 @@ public class CourseController {
         return courseService.listCourses();
     }
 
-    // TODO: add semester field into CourseDTO
     // TODO: add validations on the body
     @PostMapping(value = COURSE_PATH)
-    public ResponseEntity saveCourse(@RequestBody CourseDTO course) {
+    public ResponseEntity<HttpHeaders> saveCourse(@RequestBody CourseDTO course) {
 
         CourseDTO savedCourse = courseService.saveCourse(course);
 

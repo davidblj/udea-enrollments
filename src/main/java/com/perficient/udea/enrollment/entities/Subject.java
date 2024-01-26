@@ -27,7 +27,6 @@ public class Subject {
     private String name;
     private float weight;
 
-    // TODO: mappedBy? inverseAssociation?
     @ManyToOne
     private Course course;
 }

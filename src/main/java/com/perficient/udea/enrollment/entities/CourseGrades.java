@@ -30,5 +30,5 @@ public class CourseGrades {
     private Student student;
 
     @ManyToOne
-    private CourseInstance courseInstance;
+    private ClassRoom classRoom;
 }

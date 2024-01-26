@@ -2,6 +2,7 @@ package com.perficient.udea.enrollment.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -15,9 +16,21 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class CourseInstance {
+public class ClassRoom {
+
+    public ClassRoom(UUID id, int term, int currentEnrollments, int availableCapacity, int originalCapacity, String schedule, String recurringDays, LocalDateTime createDate, Course course, Set<Student> enrollments) {
+        this.id = id;
+        this.term = term;
+        this.currentEnrollments = currentEnrollments;
+        this.availableCapacity = originalCapacity;
+        this.originalCapacity = originalCapacity;
+        this.schedule = schedule;
+        this.recurringDays = recurringDays;
+        this.createDate = createDate;
+        this.course = course;
+        this.enrollments = enrollments;
+    }
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -26,17 +39,20 @@ public class CourseInstance {
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
-    private int Semester;
-
-    private LocalDateTime startDate;
-
-    private LocalDateTime endDate;
+    private int term;
 
     private int currentEnrollments;
 
     private int availableCapacity;
 
-    private int capacity;
+    private int originalCapacity;
+
+    private String schedule;
+
+    private String recurringDays;
+
+    @CreationTimestamp
+    private LocalDateTime createDate;
 
     @ManyToOne
     private Course course;
@@ -46,5 +62,5 @@ public class CourseInstance {
     @JoinTable(name = "enrolled_student",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
-    private Set<Student> categories = new HashSet<>();
+    private Set<Student> enrollments = new HashSet<>();
 }

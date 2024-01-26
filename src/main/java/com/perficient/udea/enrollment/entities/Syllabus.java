@@ -1,14 +1,16 @@
 package com.perficient.udea.enrollment.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -17,7 +19,9 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubjectInstance {
+public class Syllabus {
+
+    // TODO: rename class to syllabus
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -26,18 +30,21 @@ public class SubjectInstance {
     @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID id;
 
-    private int semester;
+    // TODO: composite key of career and version ?
+    @NotNull
+    private String career;
 
-    private LocalDateTime startDate;
+    private boolean active;
 
-    private LocalDateTime endDate;
+    @NotNull
+    private int totalCredits;
+
+    @NotNull
+    private int minimumTotalCredits;
 
     @CreationTimestamp
-    private LocalDateTime createdDate;
+    private LocalDateTime createDate;
 
-    @UpdateTimestamp
-    private LocalDateTime updateDate;
-
-    @ManyToOne
-    private Subject subject;
+    @OneToMany(mappedBy = "syllabus")
+    private Set<Student> students = new HashSet<>();
 }

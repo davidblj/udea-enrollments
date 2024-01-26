@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface CourseRepository extends JpaRepository<Course, UUID> {
 
-    @Query("SELECT c FROM Course c JOIN c.pensum p JOIN p.students s WHERE s.id = :uuid and c.semester <= s.semester")
+    @Query("SELECT c FROM Course c JOIN c.syllabus p JOIN p.students s WHERE s.id = :uuid and c.semester <= s.semester")
     List<Course> getDefaultCourseOfferingByStudentId(@Param("uuid") String studentId);
 }

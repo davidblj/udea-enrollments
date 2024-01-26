@@ -42,7 +42,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
     private List<Course> getCompletedCoursesBy(String studentId) {
         return courseGradesRepository
                 .findByFinalGradeGreaterThanAndStudentId(2.9d, studentId).stream()
-                .map(courseGrade -> courseGrade.getCourseInstance().getCourse())
+                .map(courseGrade -> courseGrade.getClassRoom().getCourse())
                 .toList();
     }
 

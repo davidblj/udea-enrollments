@@ -13,6 +13,8 @@ public class CourseDTO {
     private UUID id;
     private String courseName;
     private String scienceField;
-    private String pensumId;
+    private String syllabusId;
+    private int semester;
     private List<CoursePrerequisiteDTO> coursePrerequisites;
+    private List<SubjectDTO> subjects;
 }
