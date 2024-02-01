@@ -6,6 +6,9 @@ import com.perficient.udea.enrollment.repositories.ClassRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ClassRoomServiceImp implements ClassRoomService {
@@ -16,5 +19,12 @@ public class ClassRoomServiceImp implements ClassRoomService {
     @Override
     public ClassRoomDTO save(ClassRoomDTO classRoom) {
         return classRoomMapper.classRoomToClassRoomDTO(classRoomRepository.save(classRoomMapper.classRoomDtoToClassRoom(classRoom)));
+    }
+
+    @Override
+    public List<ClassRoomDTO> listClassrooms(String courseId) {
+        return classRoomRepository.findAllByCourseId(UUID.fromString(courseId)).stream()
+                .map(classRoomMapper::classRoomToClassRoomDTO)
+                .toList();
     }
 }

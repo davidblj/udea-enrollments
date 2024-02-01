@@ -1,9 +1,10 @@
 package com.perficient.udea.enrollment.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -21,5 +22,21 @@ public class Student extends Person {
     @ManyToOne
     private Syllabus syllabus;
 
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(name = "enrolled_student",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "classroom_id"))
+    private Set<ClassRoom> classRoomEnrollments = new HashSet<>();
 
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(name = "enrolled_term",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "term_id"))
+    private Set<Term> termEnrollments = new HashSet<>();
+
+    public void addTermEnrollments(Term term) {
+        this.termEnrollments.add(term);
+    }
 }

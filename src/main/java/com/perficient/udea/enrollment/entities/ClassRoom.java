@@ -60,7 +60,11 @@ public class ClassRoom {
     @Builder.Default
     @ManyToMany
     @JoinTable(name = "enrolled_student",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id"))
+            joinColumns = @JoinColumn(name = "classroom_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<Student> enrollments = new HashSet<>();
+
+    public void addEnrollments(Student student) {
+        this.enrollments.add(student);
+    }
 }

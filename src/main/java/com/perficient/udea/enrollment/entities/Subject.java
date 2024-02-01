@@ -25,6 +25,7 @@ public class Subject {
     private UUID id;
 
     private String name;
+
     private float weight;
 
     @ManyToOne

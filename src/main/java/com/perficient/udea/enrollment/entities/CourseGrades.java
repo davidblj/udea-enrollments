@@ -24,7 +24,6 @@ public class CourseGrades {
     private UUID id;
 
     private double finalGrade;
-    private int semester;
 
     @ManyToOne
     private Student student;

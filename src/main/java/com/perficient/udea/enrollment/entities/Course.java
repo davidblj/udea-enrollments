@@ -20,11 +20,12 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Course {
 
-    public Course(UUID id, String courseName, int semester, String scienceField, Syllabus syllabus, Set<CoursePrerequisite> coursePrerequisites, Set<ClassRoom> classRooms, Set<Subject> subjects) {
+    public Course(UUID id, String courseName, int semester, String scienceField, int credits, Syllabus syllabus, Set<CoursePrerequisite> coursePrerequisites, Set<ClassRoom> classRooms, Set<Subject> subjects) {
         this.id = id;
         this.courseName = courseName;
         this.semester = semester;
         this.scienceField = scienceField;
+        this.credits = credits;
         this.syllabus = syllabus;
         this.setCoursePrerequisites(coursePrerequisites);
         this.classRooms = classRooms;
@@ -46,8 +47,9 @@ public class Course {
 
     private int semester;
 
-    // TODO: foreign table, ENUMS ?
     private String scienceField;
+
+    private int credits;
 
     @ManyToOne
     private Syllabus syllabus;

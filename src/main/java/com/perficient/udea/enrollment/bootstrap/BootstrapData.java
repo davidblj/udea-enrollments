@@ -17,6 +17,7 @@ public class BootstrapData implements CommandLineRunner {
     private final SyllabusRepository syllabusRepository;
     private final PersonRepository personRepository;
     private final CourseGradesRepository courseGradesRepository;
+    private final TermRepository termRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -33,6 +34,12 @@ public class BootstrapData implements CommandLineRunner {
                     .minimumTotalCredits(150)
                     .build();
             syllabusRepository.save(computerScienceSyllabus);
+
+            Term term202401 = Term.builder().term("202401").active(true).build();
+            Term term202302 = Term.builder().term("202302").active(false).build();
+
+            termRepository.save(term202401);
+            termRepository.save(term202302);
 
             // Courses
             Course calculusCourse = Course.builder()
