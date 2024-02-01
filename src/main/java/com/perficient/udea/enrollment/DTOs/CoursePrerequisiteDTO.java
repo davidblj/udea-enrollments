@@ -1,6 +1,7 @@
 package com.perficient.udea.enrollment.DTOs;
 
 import lombok.*;
+import org.hibernate.validator.constraints.UUID;
 
 @Data
 @Setter
@@ -9,5 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 public class CoursePrerequisiteDTO {
 
+    @UUID(version = 1)
     private String coursePrerequisiteId;
 }

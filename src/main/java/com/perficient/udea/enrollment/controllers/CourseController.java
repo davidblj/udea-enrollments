@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,15 +27,14 @@ public class CourseController {
         return courseService.listCourses();
     }
 
-    // TODO: add validations on the body
     @PostMapping(value = COURSE_PATH)
-    public ResponseEntity<HttpHeaders> saveCourse(@RequestBody CourseDTO course) {
+    public ResponseEntity<HttpHeaders> saveCourse(@Validated @RequestBody CourseDTO course) {
 
         CourseDTO savedCourse = courseService.saveCourse(course);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", COURSE_PATH + "/" + savedCourse.getId().toString());
 
-        return new ResponseEntity(headers, HttpStatus.CREATED);
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 }

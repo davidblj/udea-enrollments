@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class ClassRoomController {
 
     // TODO: add teacher
     @PostMapping(value = CLASSROOM_PATH)
-    public ResponseEntity<HttpHeaders> saveClassroom(@PathVariable("courseId") String courseId, @RequestBody ClassRoomDTO classRoom) {
+    public ResponseEntity<HttpHeaders> saveClassroom(@PathVariable("courseId") String courseId, @Validated @RequestBody ClassRoomDTO classRoom) {
 
         classRoom.setCourseId(courseId);
         ClassRoomDTO classRoomDTO = classRoomService.save(classRoom);
@@ -34,5 +35,4 @@ public class ClassRoomController {
 
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
-
 }

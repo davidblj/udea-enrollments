@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,7 +28,7 @@ public class EnrollmentController {
 
         @Transactional(rollbackFor = Exception.class)
         @PostMapping({COURSE_SUBSCRIPTION_PATH})
-        public ResponseEntity<HttpHeaders> subscribe(@PathVariable("studentId") String studentId, @RequestBody SubscriptionDTO subscriptionDTO) {
+        public ResponseEntity<HttpHeaders> subscribe(@PathVariable("studentId") String studentId, @Validated @RequestBody SubscriptionDTO subscriptionDTO) {
                 enrollmentService.subscribeStudent(subscriptionDTO);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

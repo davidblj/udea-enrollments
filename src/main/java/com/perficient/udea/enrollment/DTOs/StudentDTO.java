@@ -1,14 +1,24 @@
 package com.perficient.udea.enrollment.DTOs;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 
+// TODO:
 @Data
 @Builder
 public class StudentDTO {
 
-    private String fullName;
-    private String email;
-    private String phoneNumber;
+    @NotBlank
     private String id;
+
+    @NotBlank
+    private String fullName;
+
+    @Email
+    private String email;
+
+    @NotBlank
+    private String phoneNumber;
 }
