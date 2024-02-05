@@ -42,7 +42,7 @@ public class Course {
     @NotNull
     @NotBlank
     @Size(max = 50)
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     private String courseName;
 
     private int semester;

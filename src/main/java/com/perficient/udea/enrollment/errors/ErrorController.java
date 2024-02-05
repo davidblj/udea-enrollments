@@ -1,9 +1,8 @@
 package com.perficient.udea.enrollment.errors;
 
-import com.perficient.udea.enrollment.errors.exceptions.EnrollmentInvalidSessionException;
-import com.perficient.udea.enrollment.errors.exceptions.InvalidCourseEnrollmentException;
-import com.perficient.udea.enrollment.errors.exceptions.InvalidCourseTrayException;
-import com.perficient.udea.enrollment.errors.exceptions.NoSpotsAvailableException;
+import com.perficient.udea.enrollment.errors.exceptions.*;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -42,6 +42,17 @@ public class ErrorController {
     ResponseEntity<SimpleErrorResponse> handleEnrollmentInvalidSessionException(EnrollmentInvalidSessionException exception){
         SimpleErrorResponse errorResponse = new SimpleErrorResponse(HttpStatus.FORBIDDEN.toString(), exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler
+    ResponseEntity<SimpleErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException exception){
+
+        SimpleErrorResponse errorResponse = Optional.ofNullable(exception.getCause())
+                .flatMap(throwable -> Optional.ofNullable(throwable.getCause()))
+                .map(throwable -> new SimpleErrorResponse(HttpStatus.CONFLICT.toString(), throwable.getMessage()))
+                .orElse(new SimpleErrorResponse(HttpStatus.CONFLICT.toString(), exception.getMessage()));
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

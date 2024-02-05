@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface ClassRoomMapper {
 
     @Mapping( target = "course.id", source = "courseId")
-    ClassRoom classRoomDtoToClassRoom(ClassRoomDTO classRoomDTO);
+    ClassRoom classRoomDTOToClassRoom(ClassRoomDTO classRoomDTO);
 
     @Mapping( target = "courseId", ignore = true)
     ClassRoomDTO classRoomToClassRoomDTO(ClassRoom classRoom);

@@ -27,7 +27,6 @@ public class ClassRoomController {
     // TODO: add teacher
     @PostMapping(value = CLASSROOM_PATH)
     public ResponseEntity<HttpHeaders> saveClassroom(@PathVariable("courseId") String courseId, @Validated @RequestBody ClassRoomDTO classRoom) {
-
         classRoom.setCourseId(courseId);
         ClassRoomDTO classRoomDTO = classRoomService.save(classRoom);
         HttpHeaders headers = new HttpHeaders();

@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 
 @Entity
 @Getter
 @Setter
+@SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +23,7 @@ public class Person {
     private String fullName;
 
     @Email
+    @Column(unique = true)
     private String email;
 
     private String phoneNumber;

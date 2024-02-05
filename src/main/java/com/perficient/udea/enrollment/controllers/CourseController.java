@@ -3,14 +3,12 @@ package com.perficient.udea.enrollment.controllers;
 import com.perficient.udea.enrollment.DTOs.CourseDTO;
 import com.perficient.udea.enrollment.services.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,13 +16,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseController {
 
-    public static final String COURSE_PATH = "/api/v1/course";
+    public static final String COURSE_PATH = "/api/v1/syllabus/{syllabusId}/courses";
 
     private final CourseService courseService;
 
     @GetMapping(value = COURSE_PATH)
-    public List<CourseDTO> listCourses() {
-        return courseService.listCourses();
+    public Page<CourseDTO> listCourses(@PathVariable String syllabusId, @RequestParam int page, @RequestParam int size) {
+        return courseService.listCourses(syllabusId, page, size);
     }
 
     @PostMapping(value = COURSE_PATH)

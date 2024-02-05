@@ -1,12 +1,11 @@
 package com.perficient.udea.enrollment.services;
 
 import com.perficient.udea.enrollment.DTOs.CourseDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface CourseService {
 
-    List<CourseDTO> listCourses();
+    Page<CourseDTO> listCourses(String syllabusId, int page, int size);
 
     CourseDTO saveCourse(CourseDTO course);
 }

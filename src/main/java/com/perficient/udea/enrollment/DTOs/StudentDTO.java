@@ -1,13 +1,10 @@
 package com.perficient.udea.enrollment.DTOs;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+import org.hibernate.validator.constraints.UUID;
 
-// TODO:
 @Data
-@Builder
 public class StudentDTO {
 
     @NotBlank
@@ -21,4 +18,12 @@ public class StudentDTO {
 
     @NotBlank
     private String phoneNumber;
+
+    @NotNull
+    @Min(value = 1)
+    @Max(value = 6)
+    private int stratum;
+
+    @UUID(version = 1)
+    private String syllabusId;
 }

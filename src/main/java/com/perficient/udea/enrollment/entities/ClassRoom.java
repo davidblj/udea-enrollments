@@ -17,6 +17,9 @@ import java.util.UUID;
 @Setter
 @Builder
 @NoArgsConstructor
+@Table(uniqueConstraints = {
+         @UniqueConstraint(columnNames = {"schedule", "recurringDays", "course_id"} )
+})
 public class ClassRoom {
 
     public ClassRoom(UUID id, int term, int currentEnrollments, int availableCapacity, int originalCapacity, String schedule, String recurringDays, LocalDateTime createDate, Course course, Set<Student> enrollments) {

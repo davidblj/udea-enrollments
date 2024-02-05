@@ -18,7 +18,7 @@ public class ClassRoomServiceImp implements ClassRoomService {
 
     @Override
     public ClassRoomDTO save(ClassRoomDTO classRoom) {
-        return classRoomMapper.classRoomToClassRoomDTO(classRoomRepository.save(classRoomMapper.classRoomDtoToClassRoom(classRoom)));
+        return classRoomMapper.classRoomToClassRoomDTO(classRoomRepository.save(classRoomMapper.classRoomDTOToClassRoom(classRoom)));
     }
 
     @Override
