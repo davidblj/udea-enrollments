@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Set;
@@ -39,9 +38,6 @@ class EnrollmentServiceImpTest {
 
     @Mock
     private TermRepository termRepository;
-
-    @Mock
-    private StudentRepository studentRepository;
 
     @Mock
     private CourseRepository courseRepository;
@@ -77,7 +73,7 @@ class EnrollmentServiceImpTest {
         List<CourseGrades> courseGradesList = List.of(courseGrades);
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(courseGradesList);
         List<Course> courseList = List.of(algebra, mathematics);
-        given(courseRepository.getDefaultCourseOfferingByStudentId(studentId)).willReturn(courseList);
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(courseList);
 
         RegistrationSpotsDTO enrollmentInformation = enrollmentServiceImp.getEnrollmentInformation(studentId);
 
@@ -98,7 +94,7 @@ class EnrollmentServiceImpTest {
         integralCalculus.setCoursePrerequisites(Set.of(coursePrerequisite));
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
         List<Course> courseList = List.of(integralCalculus, differentialCalculus);
-        given(courseRepository.getDefaultCourseOfferingByStudentId(studentId)).willReturn(courseList);
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(courseList);
 
         RegistrationSpotsDTO enrollmentInformation = enrollmentServiceImp.getEnrollmentInformation(studentId);
 
@@ -106,7 +102,9 @@ class EnrollmentServiceImpTest {
         assertThat(enrollmentInformation.getCourseDTOList().getFirst().getId()).isEqualTo(differentialCalculus.getId());
     }
 
-    @DisplayName("getEnrollmentInformation - Should throw an exception when the student passed it's due time to subscribe")
+    // TODO: make getEnrollmentInformation compliant case
+
+    @DisplayName("subscribeStudent - Should throw an exception when the student passed it's due time to subscribe")
     @Test
     public void shouldValidateSession() {
 
@@ -118,14 +116,14 @@ class EnrollmentServiceImpTest {
                 .studentId(studentId)
                 .classRoomIds(uuids).build();
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
-        given(courseRepository.getDefaultCourseOfferingByStudentId(studentId)).willReturn(List.of());
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(List.of());
 
         assertThrows(EnrollmentInvalidSessionException.class, () -> {
             enrollmentServiceImp.subscribeStudent(subscriptionDTO);
         });
     }
 
-    @DisplayName("getEnrollmentInformation - Should throw an exception when the student have an active enrollment")
+    @DisplayName("subscribeStudent - Should throw an exception when the student have an active enrollment")
     @Test
     public void shouldValidateActiveEnrollmentOnSubscription() {
 
@@ -137,7 +135,7 @@ class EnrollmentServiceImpTest {
                 .studentId(studentId)
                 .classRoomIds(uuids).build();
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
-        given(courseRepository.getDefaultCourseOfferingByStudentId(studentId)).willReturn(List.of());
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(List.of());
         Term term = Term.builder().build();
         given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(term);
 
@@ -146,7 +144,7 @@ class EnrollmentServiceImpTest {
         });
     }
 
-    @DisplayName("getEnrollmentInformation - Should throw an exception when non existing course ids were sent")
+    @DisplayName("subscribeStudent - Should throw an exception when non existing course ids were sent")
     @Test
     public void shouldValidateInvalidCourseIds() {
 
@@ -158,7 +156,7 @@ class EnrollmentServiceImpTest {
                 .studentId(studentId)
                 .classRoomIds(uuids).build();
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
-        given(courseRepository.getDefaultCourseOfferingByStudentId(studentId)).willReturn(List.of());
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(List.of());
         given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(null);
         given(classRoomRepository.getAllByIdIn(any())).willReturn(List.of());
 
@@ -167,15 +165,15 @@ class EnrollmentServiceImpTest {
         });
     }
 
-    @DisplayName("getEnrollmentInformation - Should throw an exception when a provided classroom is out of spots")
+    @DisplayName("subscribeStudent - Should throw an exception when a provided classroom is out of spots")
     @Test
     public void shouldValidateClassRoomsOutOfSpots() {
 
         String studentId = "1152209135";
         Long activeSession = System.currentTimeMillis() + (60 * 1000);
         Course integralCalculus = Course.builder().courseName("Integral Calculus").id(UUID.randomUUID()).build();
-        Course differentialCalculus = Course.builder().courseName("Differential Calculus").id(UUID.randomUUID()).build();
-        List<Course> courses = List.of(integralCalculus, differentialCalculus);
+        Course physics = Course.builder().courseName("Physics").id(UUID.randomUUID()).build();
+        List<Course> courses = List.of(integralCalculus, physics);
         UUID integralCalculusUuid = UUID.randomUUID();
         UUID diffCalculusUuid = UUID.randomUUID();
         List<String> uuids = List.of(integralCalculusUuid.toString(), diffCalculusUuid.toString());
@@ -184,10 +182,10 @@ class EnrollmentServiceImpTest {
                 .studentId(studentId)
                 .classRoomIds(uuids).build();
         ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).availableCapacity(0).build();
-        ClassRoom diffenrentialCalculusClassRoom = ClassRoom.builder().id(diffCalculusUuid).course(integralCalculus).build();
-        List<ClassRoom> classRooms = List.of(integralCalculusClassRoom, diffenrentialCalculusClassRoom);
+        ClassRoom physicsClassRoom = ClassRoom.builder().id(diffCalculusUuid).course(physics).availableCapacity(40).build();
+        List<ClassRoom> classRooms = List.of(integralCalculusClassRoom, physicsClassRoom);
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
-        given(courseRepository.getDefaultCourseOfferingByStudentId(studentId)).willReturn(courses);
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(courses);
         given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(null);
         given(classRoomRepository.getAllByIdIn(any())).willReturn(classRooms);
 
@@ -197,15 +195,15 @@ class EnrollmentServiceImpTest {
         });
     }
 
-    @DisplayName("getEnrollmentInformation - Should throw an exception when a provided course id is not a valid course subscription")
+    @DisplayName("subscribeStudent - Should throw an exception when a provided course id is not a valid course subscription")
     @Test
     public void shouldValidateCourseSubscription() {
 
         String studentId = "1152209135";
         Long activeSession = System.currentTimeMillis() + (60 * 1000);
         Course integralCalculus = Course.builder().courseName("Integral Calculus").id(UUID.randomUUID()).build();
-        Course differentialCalculus = Course.builder().courseName("Differential Calculus").id(UUID.randomUUID()).build();
-        List<Course> courses = List.of(integralCalculus, differentialCalculus);
+        Course nonCompliatCourse = Course.builder().courseName("non compliant").id(UUID.randomUUID()).build();
+        List<Course> courses = List.of(integralCalculus, nonCompliatCourse);
         UUID integralCalculusUuid = UUID.randomUUID();
         UUID diffCalculusUuid = UUID.randomUUID();
         List<String> uuids = List.of(integralCalculusUuid.toString(), diffCalculusUuid.toString());
@@ -213,19 +211,41 @@ class EnrollmentServiceImpTest {
                 .timestamp(activeSession)
                 .studentId(studentId)
                 .classRoomIds(uuids).build();
-        ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).build();
-        ClassRoom diffenrentialCalculusClassRoom = ClassRoom.builder().id(diffCalculusUuid).course(integralCalculus).build();
-        List<ClassRoom> classRooms = List.of(integralCalculusClassRoom, diffenrentialCalculusClassRoom);
+        ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).availableCapacity(40).build();
+        List<ClassRoom> classRooms = List.of(integralCalculusClassRoom);
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
-        given(courseRepository.getDefaultCourseOfferingByStudentId(studentId)).willReturn(courses);
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(courses);
         given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(null);
         given(classRoomRepository.getAllByIdIn(any())).willReturn(classRooms);
 
-        assertThrows(NoSpotsAvailableException.class, () -> {
+        assertThrows(InvalidCourseTrayException.class, () -> {
             enrollmentServiceImp.subscribeStudent(subscriptionDTO);
         });
     }
 
+    @DisplayName("subscribeStudent - Should an enrollment successfully if its a valid subscription")
+    @Test
+    public void shouldCreateEnrollmentsSuccessfully() {
 
+        String studentId = "1152209135";
+        Long activeSession = System.currentTimeMillis() + (60 * 1000);
+        Course integralCalculus = Course.builder().courseName("Integral Calculus").id(UUID.randomUUID()).build();
+        List<Course> courses = List.of(integralCalculus, integralCalculus);
+        UUID integralCalculusUuid = UUID.randomUUID();
+        List<String> uuids = List.of(integralCalculusUuid.toString());
+        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder()
+                .timestamp(activeSession)
+                .studentId(studentId)
+                .classRoomIds(uuids).build();
+        ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).availableCapacity(40).build();
+        List<ClassRoom> classRooms = List.of(integralCalculusClassRoom);
+        given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(courses);
+        given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(null);
+        given(classRoomRepository.getAllByIdIn(any())).willReturn(classRooms);
 
+        enrollmentServiceImp.subscribeStudent(subscriptionDTO);
+
+        // TODO: finish
+    }
 }

@@ -34,9 +34,10 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
     private final SimpleCourseMapper simpleCourseMapper;
 
+    // TODO: validate existing userId
+
     @Override
     public void subscribeStudent(SubscriptionDTO subscriptionDTO) {
-
         List<UUID> classRoomIds = subscriptionDTO.getClassRoomIds().stream().map(UUID::fromString).toList();
         List<Course> availableCourses = getAvailableCourses(subscriptionDTO.getStudentId());
         List<ClassRoom> classRoomsToEnroll = classRoomRepository.getAllByIdIn(classRoomIds);
@@ -125,14 +126,13 @@ public class EnrollmentServiceImp implements EnrollmentService {
 
     @Override
     public RegistrationSpotsDTO getEnrollmentInformation(String studentId) {
-
         validateActiveEnrollment(studentId);
         return buildDTOWithStudentIdAndAvailableCourses(studentId, getAvailableCourses(studentId));
     }
 
     private List<Course> getAvailableCourses(String studentId) {
         List<Course> successfullyCompletedCourses = getCompletedCoursesBy(studentId);
-        List<Course> baseOffering = courseRepository.getDefaultCourseOfferingByStudentId(studentId);
+        List<Course> baseOffering = courseRepository.getBaseOfferingByStudentId(studentId);
         return getAvailableCourses(baseOffering, successfullyCompletedCourses);
     }
 

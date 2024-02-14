@@ -26,6 +26,7 @@ public class BootstrapData implements CommandLineRunner {
 
     private void loadData() {
 
+        /*
         if (syllabusRepository.count() == 0) {
 
             Syllabus computerScienceSyllabus = Syllabus.builder()
@@ -183,5 +184,6 @@ public class BootstrapData implements CommandLineRunner {
             courseGradesRepository.save(courseGrades1);
             courseGradesRepository.save(courseGrades2);
         }
+        */
     }
 }
