@@ -1,15 +1,15 @@
 package com.perficient.udea.enrollment.services;
 
-import com.perficient.udea.enrollment.DTOs.RegistrationSpotsDTO;
-import com.perficient.udea.enrollment.DTOs.SubscriptionDTO;
-import com.perficient.udea.enrollment.entities.*;
-import com.perficient.udea.enrollment.errors.exceptions.EnrollmentInvalidSessionException;
-import com.perficient.udea.enrollment.errors.exceptions.InvalidCourseEnrollmentException;
-import com.perficient.udea.enrollment.errors.exceptions.InvalidCourseTrayException;
-import com.perficient.udea.enrollment.errors.exceptions.NoSpotsAvailableException;
-import com.perficient.udea.enrollment.mappers.SimpleCourseMapper;
-import com.perficient.udea.enrollment.repositories.*;
-import jakarta.transaction.Transactional;
+import com.perficient.udea.enrollment.application.DTOs.RegistrationSpotsDTO;
+import com.perficient.udea.enrollment.application.DTOs.SubscriptionDTO;
+import com.perficient.udea.enrollment.application.services.EnrollmentServiceImp;
+import com.perficient.udea.enrollment.persistence.entities.*;
+import com.perficient.udea.enrollment.persistence.repositories.*;
+import com.perficient.udea.enrollment.presentation.errors.exceptions.EnrollmentInvalidSessionException;
+import com.perficient.udea.enrollment.presentation.errors.exceptions.InvalidCourseEnrollmentException;
+import com.perficient.udea.enrollment.presentation.errors.exceptions.InvalidCourseTrayException;
+import com.perficient.udea.enrollment.presentation.errors.exceptions.NoSpotsAvailableException;
+import com.perficient.udea.enrollment.application.mappers.SimpleCourseMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

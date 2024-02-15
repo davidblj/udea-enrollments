@@ -1,9 +1,9 @@
 package com.perficient.udea.enrollment.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.perficient.udea.enrollment.DTOs.SubscriptionDTO;
-import com.perficient.udea.enrollment.entities.*;
-import com.perficient.udea.enrollment.repositories.*;
+import com.perficient.udea.enrollment.application.DTOs.SubscriptionDTO;
+import com.perficient.udea.enrollment.persistence.entities.*;
+import com.perficient.udea.enrollment.persistence.repositories.*;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -193,7 +193,7 @@ class EnrollmentControllerTest {
                         .content(objectMapper.writeValueAsString(subscriptionDTO)));
 
         response.andDo(print())
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", is(equalTo("The sessions is finished, the user took more than 15 minutes filling the form"))));
     }
 
