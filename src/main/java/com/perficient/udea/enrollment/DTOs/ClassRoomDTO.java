@@ -20,7 +20,7 @@ public class ClassRoomDTO {
     @Max(value = 50)
     private int originalCapacity;
 
-    @Pattern(regexp="^(1[0-2]|0?[1-9])-([0-2]?[0-9])\\s+(AM|PM)$")
+    @Pattern(regexp="^([0-2]|[0-9])-([0-2]?[0-9])\\s+(AM|PM)$")
     private String schedule;
 
     @Pattern(regexp="^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)-(Mon|Tue|Wed|Thu|Fri|Sat|Sun)$")
