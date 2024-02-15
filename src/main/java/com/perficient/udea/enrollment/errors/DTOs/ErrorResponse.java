@@ -1,13 +1,16 @@
-package com.perficient.udea.enrollment.errors;
-
+package com.perficient.udea.enrollment.errors.DTOs;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
-public class SimpleErrorResponse {
+public class ErrorResponse {
+
     private String statusCode;
     private String message;
+    private List<String> errorList;
 }

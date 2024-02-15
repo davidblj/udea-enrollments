@@ -1,8 +1,9 @@
 package com.perficient.udea.enrollment.errors;
 
+import com.perficient.udea.enrollment.errors.DTOs.ErrorResponse;
+import com.perficient.udea.enrollment.errors.DTOs.SimpleErrorResponse;
 import com.perficient.udea.enrollment.errors.exceptions.*;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

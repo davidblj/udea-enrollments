@@ -9,6 +9,7 @@ import com.perficient.udea.enrollment.errors.exceptions.InvalidCourseTrayExcepti
 import com.perficient.udea.enrollment.errors.exceptions.NoSpotsAvailableException;
 import com.perficient.udea.enrollment.mappers.SimpleCourseMapper;
 import com.perficient.udea.enrollment.repositories.*;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class EnrollmentServiceImpTest {
@@ -41,6 +45,9 @@ class EnrollmentServiceImpTest {
 
     @Mock
     private CourseRepository courseRepository;
+
+    @Mock
+    private StudentRepository studentRepository;
 
     @Spy
     private SimpleCourseMapper simpleCourseMapper = Mappers.getMapper(SimpleCourseMapper.class);
@@ -102,7 +109,21 @@ class EnrollmentServiceImpTest {
         assertThat(enrollmentInformation.getCourseDTOList().getFirst().getId()).isEqualTo(differentialCalculus.getId());
     }
 
-    // TODO: make getEnrollmentInformation compliant case
+    @DisplayName("getEnrollmentInformation - should list all available courses")
+    @Test
+    public void shouldListAvailableCoursesToEnroll() {
+
+        String studentId = "1152209135";
+        Course differentialCalculus = Course.builder().courseName("Differential Calculus").id(UUID.randomUUID()).build();
+        Course algebra = Course.builder().courseName("Algebra").id(UUID.randomUUID()).build();
+        Course mathematics = Course.builder().courseName("mathematics").id(UUID.randomUUID()).build();
+        List<Course> courseList = List.of(algebra, mathematics, differentialCalculus);
+        given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(courseList);
+
+        RegistrationSpotsDTO enrollmentInformation = enrollmentServiceImp.getEnrollmentInformation(studentId);
+
+        assertThat(enrollmentInformation.getCourseDTOList().size()).isEqualTo(courseList.size());
+    }
 
     @DisplayName("subscribeStudent - Should throw an exception when the student passed it's due time to subscribe")
     @Test
@@ -111,10 +132,7 @@ class EnrollmentServiceImpTest {
         String studentId = "1152209135";
         Long activeSession = System.currentTimeMillis() - (60 * 1000);
         List<String> uuids = List.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
-        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder()
-                .timestamp(activeSession)
-                .studentId(studentId)
-                .classRoomIds(uuids).build();
+        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder().timestamp(activeSession).studentId(studentId).classRoomIds(uuids).build();
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
         given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(List.of());
 
@@ -130,10 +148,7 @@ class EnrollmentServiceImpTest {
         String studentId = "1152209135";
         Long activeSession = System.currentTimeMillis() + (60 * 1000);
         List<String> uuids = List.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
-        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder()
-                .timestamp(activeSession)
-                .studentId(studentId)
-                .classRoomIds(uuids).build();
+        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder().timestamp(activeSession).studentId(studentId).classRoomIds(uuids).build();
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
         given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(List.of());
         Term term = Term.builder().build();
@@ -144,9 +159,9 @@ class EnrollmentServiceImpTest {
         });
     }
 
-    @DisplayName("subscribeStudent - Should throw an exception when non existing course ids were sent")
+    @DisplayName("subscribeStudent - Should throw an exception when non existing classroom ids were sent")
     @Test
-    public void shouldValidateInvalidCourseIds() {
+    public void shouldValidateInvalidClassroomIds() {
 
         String studentId = "1152209135";
         Long activeSession = System.currentTimeMillis() + (60 * 1000);
@@ -177,10 +192,7 @@ class EnrollmentServiceImpTest {
         UUID integralCalculusUuid = UUID.randomUUID();
         UUID diffCalculusUuid = UUID.randomUUID();
         List<String> uuids = List.of(integralCalculusUuid.toString(), diffCalculusUuid.toString());
-        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder()
-                .timestamp(activeSession)
-                .studentId(studentId)
-                .classRoomIds(uuids).build();
+        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder().timestamp(activeSession).studentId(studentId).classRoomIds(uuids).build();
         ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).availableCapacity(0).build();
         ClassRoom physicsClassRoom = ClassRoom.builder().id(diffCalculusUuid).course(physics).availableCapacity(40).build();
         List<ClassRoom> classRooms = List.of(integralCalculusClassRoom, physicsClassRoom);
@@ -202,17 +214,20 @@ class EnrollmentServiceImpTest {
         String studentId = "1152209135";
         Long activeSession = System.currentTimeMillis() + (60 * 1000);
         Course integralCalculus = Course.builder().courseName("Integral Calculus").id(UUID.randomUUID()).build();
-        Course nonCompliatCourse = Course.builder().courseName("non compliant").id(UUID.randomUUID()).build();
-        List<Course> courses = List.of(integralCalculus, nonCompliatCourse);
+        Course differentialCalculus = Course.builder().courseName("Differential Calculus").id(UUID.randomUUID()).build();
+        // prerequisite pre-configuration
+        CoursePrerequisiteId idDiffCalcAndAlgebra = CoursePrerequisiteId.builder().coursePrerequisite(differentialCalculus).build();
+        CoursePrerequisite prerequisite = CoursePrerequisite.builder().coursePrerequisiteId(idDiffCalcAndAlgebra).build();
+        HashSet<CoursePrerequisite> coursePrerequisites = new HashSet<>();
+        coursePrerequisites.add(prerequisite);
+        integralCalculus.setCoursePrerequisites(coursePrerequisites);
+        // dto set up
+        List<Course> courses = List.of(integralCalculus, differentialCalculus);
         UUID integralCalculusUuid = UUID.randomUUID();
-        UUID diffCalculusUuid = UUID.randomUUID();
-        List<String> uuids = List.of(integralCalculusUuid.toString(), diffCalculusUuid.toString());
-        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder()
-                .timestamp(activeSession)
-                .studentId(studentId)
-                .classRoomIds(uuids).build();
-        ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).availableCapacity(40).build();
+        List<String> uuids = List.of(integralCalculusUuid.toString());
+        ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).originalCapacity(40).build();
         List<ClassRoom> classRooms = List.of(integralCalculusClassRoom);
+        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder().timestamp(activeSession).studentId(studentId).classRoomIds(uuids).build();
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
         given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(courses);
         given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(null);
@@ -228,6 +243,7 @@ class EnrollmentServiceImpTest {
     public void shouldCreateEnrollmentsSuccessfully() {
 
         String studentId = "1152209135";
+        Student student = Student.builder().id(studentId).build();
         Long activeSession = System.currentTimeMillis() + (60 * 1000);
         Course integralCalculus = Course.builder().courseName("Integral Calculus").id(UUID.randomUUID()).build();
         List<Course> courses = List.of(integralCalculus, integralCalculus);
@@ -237,15 +253,22 @@ class EnrollmentServiceImpTest {
                 .timestamp(activeSession)
                 .studentId(studentId)
                 .classRoomIds(uuids).build();
-        ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).availableCapacity(40).build();
+        ClassRoom integralCalculusClassRoom = ClassRoom.builder().id(integralCalculusUuid).course(integralCalculus).originalCapacity(40).build();
         List<ClassRoom> classRooms = List.of(integralCalculusClassRoom);
         given(courseGradesRepository.findByFinalGradeGreaterThanAndStudentId(2.9, studentId)).willReturn(List.of());
+        given(courseGradesRepository.saveAll(any())).willReturn(List.of());
         given(courseRepository.getBaseOfferingByStudentId(studentId)).willReturn(courses);
         given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(null);
+        given(termRepository.findByActiveIs(true)).willReturn(Term.builder().term("202401").build());
         given(classRoomRepository.getAllByIdIn(any())).willReturn(classRooms);
+        given(classRoomRepository.saveAll(any())).willReturn(List.of());
+        given(studentRepository.getReferenceById(any())).willReturn(student);
+        given(studentRepository.save(any())).willReturn(null);
 
         enrollmentServiceImp.subscribeStudent(subscriptionDTO);
 
-        // TODO: finish
+        verify(classRoomRepository, times(1)).saveAll(any());
+        verify(courseGradesRepository, times(1)).saveAll(any());
+        verify(studentRepository, times(1)).save(any());
     }
 }

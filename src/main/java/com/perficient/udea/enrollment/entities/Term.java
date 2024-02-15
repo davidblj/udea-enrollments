@@ -27,7 +27,7 @@ public class Term {
     private LocalDate endDate;
 
     @Builder.Default
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REMOVE)
     @JoinTable(name = "enrolled_term",
             joinColumns = @JoinColumn(name = "term_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id"))
