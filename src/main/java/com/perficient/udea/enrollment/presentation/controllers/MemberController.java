@@ -1,6 +1,6 @@
 package com.perficient.udea.enrollment.presentation.controllers;
 
-import com.perficient.udea.enrollment.application.DTOs.StudentDTO;
+import com.perficient.udea.enrollment.application.dtos.StudentDTO;
 import com.perficient.udea.enrollment.application.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

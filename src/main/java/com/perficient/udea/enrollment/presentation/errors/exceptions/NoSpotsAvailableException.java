@@ -10,10 +10,8 @@ public class NoSpotsAvailableException extends ValidationException {
 
     List<ClassRoom> classRoomsOutOfSpots;
 
-    public NoSpotsAvailableException(List<ClassRoom> classRoomsOutOfSpots) {
-
-        super("The provided classrooms don't have enough spots to subscribe new students. They were taken while" +
-                " the request was being processed or while the user was completing the form");
+    public NoSpotsAvailableException(List<ClassRoom> classRoomsOutOfSpots, String message) {
+        super(message);
         this.classRoomsOutOfSpots = classRoomsOutOfSpots;
     }
 }

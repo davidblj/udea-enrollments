@@ -1,4 +1,4 @@
-package com.perficient.udea.enrollment.application.DTOs;
+package com.perficient.udea.enrollment.application.dtos;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;

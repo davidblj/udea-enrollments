@@ -1,6 +1,6 @@
 package com.perficient.udea.enrollment.application.services;
 
-import com.perficient.udea.enrollment.application.DTOs.CourseDTO;
+import com.perficient.udea.enrollment.application.dtos.CourseDTO;
 import com.perficient.udea.enrollment.application.mappers.CourseMapper;
 import com.perficient.udea.enrollment.persistence.repositories.CourseRepository;
 import lombok.RequiredArgsConstructor;

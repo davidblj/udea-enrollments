@@ -1,7 +1,7 @@
 package com.perficient.udea.enrollment.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.perficient.udea.enrollment.application.DTOs.SubscriptionDTO;
+import com.perficient.udea.enrollment.application.dtos.SubscriptionDTO;
 import com.perficient.udea.enrollment.persistence.entities.*;
 import com.perficient.udea.enrollment.persistence.repositories.*;
 import jakarta.transaction.Transactional;

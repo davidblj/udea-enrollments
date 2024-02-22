@@ -22,7 +22,7 @@ import java.util.UUID;
 })
 public class ClassRoom {
 
-    public ClassRoom(UUID id, int term, int currentEnrollments, int availableCapacity, int originalCapacity, String schedule, String recurringDays, LocalDateTime createDate, Course course, Set<Student> enrollments) {
+    public ClassRoom(UUID id, int term, int currentEnrollments, int availableCapacity, int originalCapacity, String schedule, String recurringDays, LocalDateTime createDate, Course course, Set<CourseGrades> grades, Set<Student> enrollments) {
         this.id = id;
         this.term = term;
         this.currentEnrollments = currentEnrollments;
@@ -32,6 +32,7 @@ public class ClassRoom {
         this.recurringDays = recurringDays;
         this.createDate = createDate;
         this.course = course;
+        this.grades = grades;
         this.enrollments = enrollments;
     }
 
@@ -61,6 +62,10 @@ public class ClassRoom {
     private Course course;
 
     @Builder.Default
+    @OneToMany(mappedBy = "classRoom")
+    private Set<CourseGrades> grades = new HashSet<>();
+
+    @Builder.Default
     @ManyToMany
     @JoinTable(name = "enrolled_student",
             joinColumns = @JoinColumn(name = "classroom_id"),
@@ -69,5 +74,9 @@ public class ClassRoom {
 
     public void addEnrollments(Student student) {
         this.enrollments.add(student);
+    }
+
+    public void addGrades(CourseGrades courseGrades) {
+        this.grades.add(courseGrades);
     }
 }

@@ -1,6 +1,6 @@
 package com.perficient.udea.enrollment.application.mappers;
 
-import com.perficient.udea.enrollment.application.DTOs.ClassRoomDTO;
+import com.perficient.udea.enrollment.application.dtos.ClassRoomDTO;
 import com.perficient.udea.enrollment.persistence.entities.ClassRoom;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

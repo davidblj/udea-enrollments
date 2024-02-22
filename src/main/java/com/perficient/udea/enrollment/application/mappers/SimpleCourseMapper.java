@@ -1,6 +1,6 @@
 package com.perficient.udea.enrollment.application.mappers;
 
-import com.perficient.udea.enrollment.application.DTOs.SimpleCourseDTO;
+import com.perficient.udea.enrollment.application.dtos.SimpleCourseDTO;
 import com.perficient.udea.enrollment.persistence.entities.Course;
 import org.mapstruct.Mapper;
 

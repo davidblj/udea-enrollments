@@ -1,4 +1,4 @@
-package com.perficient.udea.enrollment.application.DTOs;
+package com.perficient.udea.enrollment.application.dtos;
 
 import lombok.*;
 import org.hibernate.validator.constraints.UUID;

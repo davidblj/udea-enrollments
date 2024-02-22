@@ -1,7 +1,7 @@
 package com.perficient.udea.enrollment.presentation.controllers;
 
-import com.perficient.udea.enrollment.application.DTOs.RegistrationSpotsDTO;
-import com.perficient.udea.enrollment.application.DTOs.SubscriptionDTO;
+import com.perficient.udea.enrollment.application.dtos.RegistrationSpotsDTO;
+import com.perficient.udea.enrollment.application.dtos.SubscriptionDTO;
 import com.perficient.udea.enrollment.application.services.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,6 +1,6 @@
 package com.perficient.udea.enrollment.application.services;
 
-import com.perficient.udea.enrollment.application.DTOs.ClassRoomDTO;
+import com.perficient.udea.enrollment.application.dtos.ClassRoomDTO;
 import com.perficient.udea.enrollment.application.mappers.ClassRoomMapper;
 import com.perficient.udea.enrollment.persistence.repositories.ClassRoomRepository;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package com.perficient.udea.enrollment.presentation.errors;
 import com.perficient.udea.enrollment.presentation.errors.DTOs.ErrorResponse;
 import com.perficient.udea.enrollment.presentation.errors.DTOs.SimpleErrorResponse;
 import com.perficient.udea.enrollment.presentation.errors.exceptions.EnrollmentInvalidSessionException;
-import com.perficient.udea.enrollment.presentation.errors.exceptions.InvalidCourseEnrollmentException;
+import com.perficient.udea.enrollment.presentation.errors.exceptions.ActiveEnrollmentException;
 import com.perficient.udea.enrollment.presentation.errors.exceptions.InvalidCourseTrayException;
 import com.perficient.udea.enrollment.presentation.errors.exceptions.NoSpotsAvailableException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -37,7 +37,7 @@ public class ErrorController {
     }
 
     @ExceptionHandler
-    ResponseEntity<SimpleErrorResponse> handleInvalidCourseEnrollmentException(InvalidCourseEnrollmentException exception){
+    ResponseEntity<SimpleErrorResponse> handleInvalidCourseEnrollmentException(ActiveEnrollmentException exception){
         SimpleErrorResponse errorResponse = new SimpleErrorResponse(HttpStatus.BAD_REQUEST.toString(), exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
