@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,7 +42,7 @@ class EnrollmentValidatorTest {
     public void shouldValidateActiveEnrollment() {
         String studentId = "1152209135";
         Term term = Term.builder().build();
-        given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(term);
+        given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(Optional.of(term));
 
         assertThrows(ActiveEnrollmentException.class, () -> {
             enrollmentValidator.validateOpening(studentId);
@@ -70,7 +71,7 @@ class EnrollmentValidatorTest {
         Long activeSession = System.currentTimeMillis() + (60 * 1000);
         SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder().timestamp(activeSession).studentId(studentId).classRoomIds(List.of()).build();
         Term term = Term.builder().build();
-        given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(term);
+        given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(Optional.of(term));
         given(classRoomPool.getClassRooms(Mockito.any())).willReturn(List.of());
 
         assertThrows(ActiveEnrollmentException.class, () -> {
@@ -87,7 +88,7 @@ class EnrollmentValidatorTest {
         List<String> uuids = List.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder().timestamp(activeSession).studentId(studentId).classRoomIds(uuids).build();
         Term term = Term.builder().build();
-        given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(term);
+        given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(Optional.of(term));
         given(classRoomPool.getClassRooms(Mockito.any())).willReturn(List.of());
 
         assertThrows(ActiveEnrollmentException.class, () -> {
@@ -111,6 +112,7 @@ class EnrollmentValidatorTest {
         List<ClassRoom> classRooms = List.of(integralCalculusClassRoom, physicsClassRoom);
         SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder().timestamp(activeSession).studentId(studentId).classRoomIds(uuids).build();
         given(classRoomPool.getClassRooms(Mockito.any())).willReturn(classRooms);
+        given(termRepository.getCurrentTermEnrollmentByStudentId(studentId)).willReturn(Optional.empty());
 
         assertThrows(NoSpotsAvailableException.class, () -> {
             enrollmentValidator.validateSubscription(subscriptionDTO);

@@ -6,6 +6,7 @@ import com.perficient.udea.enrollment.persistence.repositories.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +20,8 @@ public class CourseService {
 
     private final CourseMapper courseMapper;
 
-    public Page<CourseDTO> listCourses(String syllabusId, int page, int size) {
-        Sort sort = Sort.by(Sort.Order.asc("courseName"));
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-        return courseRepository.findAllBySyllabusId(UUID.fromString(syllabusId), pageRequest)
+    public Page<CourseDTO> listCourses(String syllabusId, Pageable page) {
+        return courseRepository.findAllBySyllabusId(UUID.fromString(syllabusId), page)
                 .map(courseMapper::courseToCourseDTO);
     }
 

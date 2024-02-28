@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -57,10 +58,10 @@ public class EnrollmentValidator {
     }
 
     private void validateActiveEnrollment() {
-        Term term = termRepository.getCurrentTermEnrollmentByStudentId(studentId);
-        if (term != null) {
-            throw new ActiveEnrollmentException("The student is already enrolled on the active term");
-        }
+        termRepository.getCurrentTermEnrollmentByStudentId(studentId)
+                .ifPresent((term) -> {
+                    throw new ActiveEnrollmentException("The student is already enrolled on the active term");
+                });
     }
 
     private void validateClassRoomIds() {
@@ -87,7 +88,6 @@ public class EnrollmentValidator {
     }
 
     private void validateCourseSubscriptions() {
-
         List<Course> availableCourses = coursePool.getAvailableCourses(this.studentId);
         List<ClassRoom> invalidEnrollments = classRoomsToEnroll.stream()
                 .filter(invalidEnrollments(availableCourses))
@@ -98,7 +98,7 @@ public class EnrollmentValidator {
         }
     }
 
-                  private Predicate<ClassRoom> invalidEnrollments(List<Course> availableCourses) {
+    private Predicate<ClassRoom> invalidEnrollments(List<Course> availableCourses) {
         return classRoomToValidate -> availableCourses.stream()
                 .noneMatch(course -> course.getId().equals(classRoomToValidate.getCourse().getId()));
     }

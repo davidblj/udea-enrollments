@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class CourseController {
 
     @Operation(summary = "List all available courses by syllabus")
     @GetMapping(value = COURSE_PATH)
-    public Page<CourseDTO> listCourses(@PathVariable String syllabusId, @RequestParam int page, @RequestParam int size) {
-        return courseService.listCourses(syllabusId, page, size);
+    public Page<CourseDTO> listCourses(@PathVariable String syllabusId, Pageable page) {
+        return courseService.listCourses(syllabusId, page);
     }
 
     @Operation(summary = "Save a course with its corresponding subjects")
